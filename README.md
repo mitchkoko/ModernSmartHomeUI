@@ -1,16 +1,5 @@
-# smarthomeui
+# MODERN SMART HOME UI x FLUTTER
 
-A new Flutter project.
+Watch tutorial here: https://youtu.be/FMV8pbz0sN8
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![C6A307C4-3A35-4CD6-BFB1-63B370A1B07F](https://user-images.githubusercontent.com/29016489/200977277-210b239c-fd92-435e-ad99-0cccd6035afd.JPG)
