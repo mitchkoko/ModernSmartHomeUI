@@ -1,0 +1,10 @@
+# Auto-detect Flutter generated files
+*.g.dart linguist-generated
+
+# Mark platform build files as vendored so Dart shows as primary language
+android/** linguist-vendored
+ios/** linguist-vendored
+linux/** linguist-vendored
+macos/** linguist-vendored
+windows/** linguist-vendored
+web/** linguist-vendored
