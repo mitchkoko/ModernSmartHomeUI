@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:smarthomeui/util/smart_device_box.dart';
+import 'package:animations/animations.dart'; // Add this import for animations
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+
   // padding constants
   final double horizontalPadding = 40;
   final double verticalPadding = 25;
@@ -28,6 +32,22 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       mySmartDevices[index][2] = value;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 500),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -64,7 +84,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            const SizedBox(height: 20),
+            
 
             // welcome home
             Padding(
@@ -84,7 +104,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            const SizedBox(height: 25),
+            
 
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 40.0),
@@ -94,7 +114,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            const SizedBox(height: 25),
+            
 
             // smart devices grid
             Padding(
@@ -108,31 +128,80 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            
 
             // grid
             Expanded(
-              child: GridView.builder(
-                itemCount: 4,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1 / 1.3,
+              child: ScaleTransition(
+                scale: CurvedAnimation(
+                  parent: _animationController,
+                  curve: Curves.easeInOut,
                 ),
-                itemBuilder: (context, index) {
-                  return SmartDeviceBox(
-                    smartDeviceName: mySmartDevices[index][0],
-                    iconPath: mySmartDevices[index][1],
-                    powerOn: mySmartDevices[index][2],
-                    onChanged: (value) => powerSwitchChanged(value, index),
-                  );
-                },
+                child: GridView.builder(
+                  itemCount: 4,
+                  physics: const NeverScrollableScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 25),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    childAspectRatio: 1 / 1.3,
+                  ),
+                  itemBuilder: (context, index) {
+                    return RotationTransition(
+                      turns: Tween<double>(begin: 0.0, end: 1.0).animate(
+                        CurvedAnimation(
+                          parent: _animationController,
+                          curve: Interval(
+                            (0.5 / mySmartDevices.length) * index,
+                            1.0,
+                            curve: Curves.easeInOut,
+                          ),
+                        ),
+                      ),
+                      child: FadeTransition(
+                        opacity: _animationController,
+                        child: FadeIn(
+                          duration: Duration(milliseconds: 500),
+                          child: SmartDeviceBox(
+                            smartDeviceName: mySmartDevices[index][0],
+                            iconPath: mySmartDevices[index][1],
+                            powerOn: mySmartDevices[index][2],
+                            onChanged: (value) =>
+                                powerSwitchChanged(value, index),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             )
           ],
         ),
       ),
+    );
+  }
+}
+class FadeIn extends StatelessWidget {
+  final Widget child;
+  final Duration duration;
+
+  const FadeIn({
+    Key? key,
+    required this.child,
+    this.duration = const Duration(milliseconds: 300),
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: duration,
+      child: child,
+      transitionBuilder: (child, animation) {
+        return FadeTransition(
+          opacity: animation,
+          child: child,
+        );
+      },
     );
   }
 }
